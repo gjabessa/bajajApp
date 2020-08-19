@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ folder }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ folder }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-item *ngIf="username">
+      <ion-thumbnail slot="start">
+        <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      </ion-thumbnail>
+      <ion-label *ngIf="username">
+        <h3> {{username}}</h3>
+        <div *ngFor="let store of stores">
+          <p  (click)="presentModal(store.store_id,store.name)">{{store.name}}</p>
+        </div>
+      </ion-label>
+     <ion-icon name="notifications" *ngIf="username && !status" style="color:red"></ion-icon>
+      <ion-text color="secondary" *ngIf="status == 'Completed'">
+        {{price}}
+      </ion-text>
+    </ion-item>
+    <agm-map [latitude]="lat" [longitude]="lng"></agm-map>
+    <ion-button (click)='accept()' *ngIf="username && !status">Accept</ion-button> 
+    <ion-button (click)='start()' *ngIf="username && status == 'Accepted'">Start</ion-button>
+    <ion-button (click)='complete()' color="secondary" *ngIf="username && status == 'Started'">Complete</ion-button>
+    <ion-button (click)='cancel()' color="danger" *ngIf="username && status != 'Completed'">Cancel</ion-button>
+    <ion-button (click)='done()' color="danger" *ngIf="username && status == 'Completed'">Done</ion-button>
+  </div>
+</ion-content>

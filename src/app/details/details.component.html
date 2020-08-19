@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      {{store_name}}
+    </ion-title>
+    <ion-subtitle slot="end">
+      Confirmation code: 15449 &nbsp;&nbsp;
+    </ion-subtitle>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    
+  </ion-header>
+    <ion-item>
+      <ion-icon name="location-sharp"></ion-icon><ion-input placeholder="Addis Ababa, CMC Street"></ion-input>
+    </ion-item>
+
+  <ion-item *ngFor="let item1 of user | async">
+    <ion-thumbnail slot="start">
+      <img src="{{item1.photo}}">
+    </ion-thumbnail>
+    <ion-col slot="start">
+      <ion-label>
+        {{item1.name}}
+      <h3>Qty: {{item1.qty}}</h3>
+      <p>{{item1.price}} Birr</p>
+    </ion-label>
+    </ion-col>
+    <ion-col>
+      <ion-icon (click)="removeFromCart(item1.key)" name="close-outline"></ion-icon>
+    </ion-col>
+  </ion-item>
+    <ion-grid> 
+     
+      <ion-row>
+        <ion-col><b>Total Price</b></ion-col>
+        <ion-col>{{total}} Birr</ion-col>
+      </ion-row>
+      
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col ion-float-right>
+          <ion-button ion-float-right (click)="dismiss()">Done</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+</ion-content>
