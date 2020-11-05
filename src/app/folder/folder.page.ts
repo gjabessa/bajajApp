@@ -110,7 +110,13 @@ export class FolderPage implements OnInit {
         }
         var totalWallet = parseFloat(wallet)+parseFloat(storeObj.price)
         var walletRef = this.db.list("/wallet");
-        walletRef.push({user_id:this.order_user_id, wallet:parseFloat(storeObj.price), driver_id:this.user_id});
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        var day  = mm + '/' + dd + '/' + yyyy;
+        walletRef.push({date:day,user_id:this.order_user_id, wallet:parseFloat(storeObj.price), driver_id:this.user_id, reason:'Item purchase'});
         storeRef.set('wallet',totalWallet)
         
       })
