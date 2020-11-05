@@ -99,12 +99,11 @@ export class FolderPage implements OnInit {
       var cartRef = this.db.list("/userdata/"+this.order_user_id);
       var storeObj: any = store;
       console.log(storeObj)
-      var storeRef = this.db.list("/userdata/"+storeObj.store_id);
+      var storeRef = this.db.object("/userdata/"+storeObj.store_id);
       var storeRefsub = storeRef.valueChanges().subscribe(result => {
         var storeVal:any = result;
         var wallet = storeVal?.wallet;
         storeRefsub.unsubscribe();
-        console.log(wallet)
         if(wallet == undefined){
           wallet = 0;
         }
@@ -117,7 +116,7 @@ export class FolderPage implements OnInit {
 
         var day  = mm + '/' + dd + '/' + yyyy;
         walletRef.push({date:day,user_id:this.order_user_id, wallet:parseFloat(storeObj.price), driver_id:this.user_id, reason:'Item purchase'});
-        storeRef.set('wallet',totalWallet)
+        storeRef.update({'wallet':totalWallet})
         
       })
     }
