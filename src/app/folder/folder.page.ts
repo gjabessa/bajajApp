@@ -26,6 +26,8 @@ export class FolderPage implements OnInit {
   order_user_id: string;
   price = '100 Birr';
   stores;
+  order_user_wallet: Number;
+  wallet: Number;
   constructor(private activatedRoute: ActivatedRoute, public db: AngularFireDatabase,public modalController: ModalController) { 
     this.orderRef = db.list("/orders", ref => ref);
     this.order = this.orderRef.snapshotChanges().pipe(
@@ -45,13 +47,13 @@ export class FolderPage implements OnInit {
         const storeRef = storesRef.valueChanges().subscribe(
           store =>{ 
             this.stores = store;
-            console.log(this.stores)
           }
         )
         this.userRef = db.object("/userdata/"+this.order_user_id);
         this.userRef.valueChanges().subscribe(user => {
           this.status = result.status;
           this.driver = result.driver;
+          this.order_user_wallet = result.wallet;
           if(this.status != 'Cancelled' || (this.driver == undefined || this.driver == this.user_id)){
             var u:any = user;
             this.username = u.name;
@@ -93,6 +95,27 @@ export class FolderPage implements OnInit {
   complete(){
     this.status = 'Completed';
     this.activeOrder.update({status:this.status, driver: this.driver})
+    for(let store of this.stores){
+      var cartRef = this.db.list("/userdata/"+this.order_user_id);
+      var storeObj: any = store;
+      console.log(storeObj)
+      var storeRef = this.db.list("/userdata/"+storeObj.store_id);
+      var storeRefsub = storeRef.valueChanges().subscribe(result => {
+        var storeVal:any = result;
+        var wallet = storeVal?.wallet;
+        storeRefsub.unsubscribe();
+        console.log(wallet)
+        if(wallet == undefined){
+          wallet = 0;
+        }
+        var totalWallet = parseFloat(wallet)+parseFloat(storeObj.price)
+        var walletRef = this.db.list("/wallet");
+        walletRef.push({user_id:this.order_user_id, wallet:parseFloat(storeObj.price), driver_id:this.user_id});
+        storeRef.set('wallet',totalWallet)
+        
+      })
+    }
+    // this.userRef.set('order_user_wallet',this.order_user_wallet)
     this.clear();
   }
   cancel(){
